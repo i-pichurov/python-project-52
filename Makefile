@@ -5,7 +5,7 @@ collectstatic:
 	uv run python manage.py collectstatic --no-input
 
 runserver:
-	python manage.py runserver
+	uv run python manage.py runserver
 
 lint:
 	uv run ruff check
