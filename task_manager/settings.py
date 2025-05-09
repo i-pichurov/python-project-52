@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'task_manager',
     'task_manager.user',
+    'task_manager.status',
 ]
 
 MIDDLEWARE = [
@@ -148,6 +149,7 @@ STATIC_ROOT = os.getenv(
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'secondary',

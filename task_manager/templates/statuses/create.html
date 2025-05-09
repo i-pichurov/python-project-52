@@ -3,11 +3,11 @@
 {% load i18n %}
 
 {% block content %}
-    <h1>Registration</h1>
+    <h1>Create status</h1>
 
-    <form action="{% url 'users_create' %}" method="post">
+    <form action="{% url 'statuses_create' %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% bootstrap_button "Register" button_type="submit" %}
+        {% bootstrap_button "Create" button_type="submit" %}
     </form>
 {% endblock %}

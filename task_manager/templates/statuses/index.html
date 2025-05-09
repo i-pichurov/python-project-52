@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <main class="flex-grow-1">
+        <div class="container-lg mt-3">
+            <h1>Statuses</h1>
+
+            <a class="btn btn-primary" href="{% url 'statuses_create' %}">{% trans "Create status" %}</a>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Дата создания</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for status in statuses %}
+                        <tr>
+                            <td>{{ status.id }}</td>
+                            <td>{{ status.name }}</td>
+                            <td>{{ status.created_at }}</td>
+                            <!-- <td>
+                                <a href="{% url 'users_update' pk=user.id %}">{% trans "Change" %}</a>
+                                <br>
+                                <a href="{% url 'users_delete' pk=user.id %}">{% trans "Delete" %}</a>
+                            </td> -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+{% endblock %}
