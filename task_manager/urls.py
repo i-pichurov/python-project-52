@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from task_manager import views
+from django.contrib.auth.views import LoginView, LogoutView
+from task_manager.user.views import CustomLoginView, CustomLogoutView
 
 urlpatterns = [
-    path("", views.index),
+    path("", views.index, name='main_page'),
+    path("login/", CustomLoginView.as_view(), name='login'),
+    path("logout/", CustomLogoutView.as_view(next_page='main_page'), name='logout'),
     path("users/", include("task_manager.user.urls")),
     path("admin/", admin.site.urls),
 ]

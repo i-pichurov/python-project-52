@@ -1,15 +1,19 @@
-from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from .forms import CustomUserCreationForm, CustomUserUpdateForm
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from django.contrib import messages
+
 
 # Create your views here.
 def index(request):
     return HttpResponse("user")
+
 
 class UserIndexView(ListView):
     model = User
@@ -17,19 +21,70 @@ class UserIndexView(ListView):
     context_object_name = 'users' # переменная в шаблоне
     paginate_by = 20 # пагинация по 20 пользователей
 
-class CustomUserCreationForm(UserCreationForm):
 
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'username', 'password1', 'password2')
+class UserCreateView(SuccessMessageMixin, CreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'users/create.html'
+    success_url = reverse_lazy('login')
+    success_message = 'Пользователь успешно зарегистрирован'
 
-    def clean_password2(self):
-        password = self.cleaned_data.get('password2')
-        if len(password) < 3:
-            raise ValidationError(_('Пароль слишком короткий. Он должен содержать не менее 3 символов.'))
-        return password
 
-class UserCreateView(CreateView):
-        form_class = CustomUserCreationForm
-        template_name = 'users/create.html'
-        success_url = reverse_lazy('users_list')
+class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = User
+    form_class = CustomUserUpdateForm
+    template_name = 'users/update.html'
+    success_url = reverse_lazy('users_list')
+    success_message = 'Пользователь успешно изменен'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход.')
+            return redirect('users_list')
+        
+        if int(self.kwargs['pk']) != request.user.pk:
+            messages.error(request, 'У вас нет прав для изменения другого пользователя.')
+            return redirect('users_list')
+    
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        # Редактируем текущего пользователя
+        return self.request.user
+        #return User.objects.get(pk=2)
+
+
+class UserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = User
+    template_name = 'users/user_confirm_delete.html'
+    success_url = reverse_lazy('users_list')
+    success_message = 'Пользователь успешно удален'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход.')
+            return redirect('users_list')
+        
+        if int(self.kwargs['pk']) != request.user.pk:
+            messages.error(request, 'У вас нет прав для изменения другого пользователя.')
+            return redirect('users_list')
+        
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
+class CustomLoginView(LoginView):
+    template_name = 'users/login.html'
+
+    def form_valid(self, form):
+        # Добавляем сообщение об успешной авторизации
+        messages.success(self.request, 'Вы успешно вошли в систему!')
+        # Важно вызвать родительский метод form_valid для завершения процесса входа
+        return super().form_valid(form)
+
+
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, "Вы успешно вышли из системы.")
+        return super().dispatch(request, *args, **kwargs)
