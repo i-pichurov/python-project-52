@@ -24,11 +24,11 @@
                             <td>{{ status.id }}</td>
                             <td>{{ status.name }}</td>
                             <td>{{ status.created_at }}</td>
-                            <!-- <td>
-                                <a href="{% url 'users_update' pk=user.id %}">{% trans "Change" %}</a>
+                            <td>
+                                <a href="{% url 'statuses_update' pk=status.id %}">{% trans "Change" %}</a>
                                 <br>
-                                <a href="{% url 'users_delete' pk=user.id %}">{% trans "Delete" %}</a>
-                            </td> -->
+                                <a href="{% url 'statuses_delete' pk=status.id %}">{% trans "Delete" %}</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
