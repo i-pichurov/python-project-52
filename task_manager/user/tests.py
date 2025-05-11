@@ -4,6 +4,12 @@ from django.contrib.auth.models import User
 
 # Create your tests here.
 
+class UserIndexTest(TestCase):
+    def test_users_list(self):
+        response = self.client.get(reverse("users_list"))
+        self.assertEqual(response.status_code, 200)
+
+
 class UserCreateTest(TestCase):
 
     def test_valid_create_user(self):
@@ -125,5 +131,5 @@ class UserDeleteTest(TestCase):
 
         self.assertRedirects(response, reverse('users_list'))
 
-        # Проверка, что пользователь больше не существует
+        # Проверка, что пользователь существует
         self.assertTrue(User.objects.filter(pk=self.user1.pk).exists())
