@@ -3,11 +3,11 @@
 {% load i18n %}
 
 {% block content %}
-    <h1>User update</h1>
+    <h1>Create task</h1>
 
-    <form method="post">
+    <form action="{% url 'tasks_create' %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% bootstrap_button "Update" button_type="submit" %}
+        {% bootstrap_button "Create" button_type="submit" %}
     </form>
 {% endblock %}

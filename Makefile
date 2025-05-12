@@ -13,6 +13,9 @@ lint:
 migrate:
 	uv run python manage.py migrate
 
+makemigrations:
+	uv run python manage.py makemigrations
+
 test:
 	uv run manage.py test
 
