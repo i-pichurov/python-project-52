@@ -6,7 +6,50 @@
         <div class="container-lg mt-3">
             <h1>Tasks</h1>
 
-            <a class="btn btn-primary" href="{% url 'tasks_create' %}">{% trans "Create task" %}</a>
+            <a class="btn btn-primary mb-3" href="{% url 'tasks_create' %}">{% trans "Create task" %}</a>
+
+            <div class="card mb-3">
+                <div class="card-body bg-light">
+                    <form class="form-inline center" method="get">
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">{% trans "Status" %}</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">{% trans "Any" %}</option>
+                                    {% for s in status_list %}
+                                        <option value="{{ s.id }}" {% if request.GET.status == s.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ s.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                  
+                            <div class="mb-3">
+                                <label for="performer" class="form-label">{% trans "Performer" %}</label>
+                                <select name="performer" id="performer" class="form-select">
+                                    <option value="">{% trans "Any" %}</option>
+                                    {% for u in user_list %}
+                                        <option value="{{ u.id }}" {% if request.GET.performer == u.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ u.username }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                  
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="only_my" name="only_my" {% if request.GET.own %}checked{% endif %}>
+                                    <label class="form-check-label" for="only_my">{% trans "Only my tasks" %}</label>
+                                </div>
+                            </div>
+                  
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+                            </div>
+
+                    </form>
+                </div>
+            </div>
 
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -25,7 +68,9 @@
                         {% for task in tasks %}
                         <tr>
                             <td>{{ task.id }}</td>
-                            <td>{{ task.name }}</td>
+                            <td>
+                                <a href="{% url 'tasks_detail' pk=task.id %}">{{ task.name }}</a>
+                            </td>
                             <td>{{ task.status }}</td>
                             <td>{{ task.creator }}</td>
                             <td>{{ task.performer }}</td>

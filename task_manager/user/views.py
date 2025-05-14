@@ -14,7 +14,6 @@ class UserIndexView(ListView):
     model = User
     template_name = 'users/index.html' # путь к шаблону
     context_object_name = 'users' # переменная в шаблоне
-    paginate_by = 20 # пагинация по 20 пользователей
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
