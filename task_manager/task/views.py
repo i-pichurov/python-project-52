@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from .models import Task
 from django.contrib.auth.models import User
 from task_manager.status.models import Status
+from task_manager.tag.models import Tag
 from django.contrib.messages.views import SuccessMessageMixin
 from .mixins import LoginRequiredMessageMixin, CustomUserLoginRequiredMixin
 from django.contrib import messages
@@ -27,6 +28,7 @@ class TaskIndexView(LoginRequiredMessageMixin, ListView):
         status_id = self.request.GET.get('status')
         performer_id = self.request.GET.get('performer')
         only_my = self.request.GET.get('only_my')
+        tag_id = self.request.GET.get('tags')
 
         if status_id:
             queryset = queryset.filter(status_id=status_id)
@@ -34,6 +36,8 @@ class TaskIndexView(LoginRequiredMessageMixin, ListView):
             queryset = queryset.filter(performer_id=performer_id)
         if only_my:
             queryset = queryset.filter(creator=self.request.user)
+        if tag_id:
+            queryset = queryset.filter(tags__id=tag_id)
 
         return queryset
 
@@ -41,13 +45,14 @@ class TaskIndexView(LoginRequiredMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['status_list'] = Status.objects.all()
         context['user_list'] = User.objects.all()
+        context['tag_list'] = Tag.objects.all()
         context['request'] = self.request  # чтобы шаблон мог читать GET-параметры
         return context
 
 
 class TaskCreateView(LoginRequiredMessageMixin, SuccessMessageMixin, CreateView):
     model = Task
-    fields = ['name', 'description', 'status', 'performer']
+    fields = ['name', 'description', 'status', 'performer', 'tags']
     template_name = 'tasks/create.html'
     success_url = reverse_lazy('tasks_list')
     success_message = 'Задача успешно создана'
@@ -59,7 +64,7 @@ class TaskCreateView(LoginRequiredMessageMixin, SuccessMessageMixin, CreateView)
 
 class TaskUpdateView(LoginRequiredMessageMixin, SuccessMessageMixin, UpdateView):
     model = Task
-    fields = ['name', 'description', 'status', 'performer']
+    fields = ['name', 'description', 'status', 'performer', 'tags']
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks_list')
     success_message = 'Задача успешно изменена'
@@ -70,6 +75,7 @@ class TaskDeleteView(CustomUserLoginRequiredMixin, SuccessMessageMixin, DeleteVi
     template_name = 'tasks/task_confirm_delete.html'
     success_url = reverse_lazy('tasks_list')
     success_message = 'Задача успешно удалена'
+
 
 class TaskDetailView(LoginRequiredMessageMixin, DetailView):
     model = Task

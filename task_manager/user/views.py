@@ -5,6 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User
 from .mixins import CustomUserLoginRequiredMixin
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
+from django.db.models import ProtectedError
 from django.urls import reverse_lazy
 from django.contrib import messages
 

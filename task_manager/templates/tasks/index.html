@@ -37,6 +37,18 @@
                             </div>
                   
                             <div class="mb-3">
+                                <label for="tags" class="form-label">{% trans "Tag" %}</label>
+                                <select name="tags" id="tags" class="form-select">
+                                    <option value="">{% trans "Any" %}</option>
+                                    {% for tag in tag_list %}
+                                        <option value="{{ tag.id }}" {% if request.GET.performer == tag.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ tag.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="only_my" name="only_my" {% if request.GET.own %}checked{% endif %}>
                                     <label class="form-check-label" for="only_my">{% trans "Only my tasks" %}</label>
@@ -73,7 +85,11 @@
                             </td>
                             <td>{{ task.status }}</td>
                             <td>{{ task.creator }}</td>
-                            <td>{{ task.performer }}</td>
+                            {% if task.performer %}
+                                <td>{{ task.performer }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
                             <td>{{ task.created_at }}</td>
                             <td>
                                 <a href="{% url 'tasks_update' pk=task.id %}">{% trans "Change" %}</a>

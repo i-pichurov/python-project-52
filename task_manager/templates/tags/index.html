@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <main class="flex-grow-1">
+        <div class="container-lg mt-3">
+            <h1>Tags</h1>
+
+            <a class="btn btn-primary" href="{% url 'tags_create' %}">{% trans "Create tag" %}</a>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Дата создания</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tag in tags %}
+                        <tr>
+                            <td>{{ tag.id }}</td>
+                            <td>{{ tag.name }}</td>
+                            <td>{{ tag.created_at }}</td>
+                            <td>
+                                <a href="{% url 'tags_update' pk=tag.id %}">{% trans "Change" %}</a>
+                                <br>
+                                <a href="{% url 'tags_delete' pk=tag.id %}">{% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+{% endblock %}

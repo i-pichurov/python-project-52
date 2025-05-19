@@ -36,7 +36,13 @@
 
                         <div class="row p-1">
                             <h6>Tags</h6>
-                            <ul></ul>
+                            <div class="col">
+                                <ul>
+                                    {% for tag in task.tags.all %}
+                                        <li>{{ tag.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="row p-1">
